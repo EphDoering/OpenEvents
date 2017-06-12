@@ -82,7 +82,7 @@
   }
     
   var populateCalendarList=function(){
-    gapi.client.calendar.calendarList.get()
+    gapi.client.calendar.calendarList.list()
     .then(function(responce){
       if(!responce.result){
         return;
