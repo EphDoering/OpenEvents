@@ -68,6 +68,7 @@
       $('#revoke-access-button').css('display', 'inline-block');
       $('#auth-status').html('You are currently signed in and have granted ' +
           'access to this app.');
+      populateCalendarList();
     } else {
       $('#sign-in-or-out-button').html('Sign In/Authorize');
       $('#revoke-access-button').css('display', 'none');
@@ -79,6 +80,21 @@
   function updateSigninStatus(isSignedIn) {
     setSigninStatus();
   }
+    
+  var populateCalendarList=function(){
+    gapi.client.calendar.calendarList.get()
+    .then(function(responce){
+      if(!responce.result){
+        return;
+      }
+      for(var i in responce.result.items){
+        var opt=document.createElement('option');
+        opt.text=responce.result.items[i].summary;
+        opt.value=responce.result.items[i].id;
+        document.getElementById('edit-calendar').appendChild(opt);
+      }
+    });
+  }
 </script>
 
 <button id="sign-in-or-out-button"
@@ -86,7 +102,11 @@
 <button id="revoke-access-button"
         style="display: none; margin-left: 25px">Revoke access</button>
 
-<div id="auth-status" style="display: inline; padding-left: 25px"></div><hr>
+<div id="auth-status" style="display: inline; padding-left: 25px"></div>
+  
+<hr>
+
+  <select id="edit-calendar"><option>Select Calendar...</option></select>  
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script async defer src="https://apis.google.com/js/api.js" 
