@@ -98,7 +98,7 @@
   }
 var search=function(e){
   if(e.preventDefault instanceof Function){
-    e.preventDefault;
+    e.preventDefault();
   }
 console.log(e);
 return false;
@@ -113,7 +113,7 @@ return false;
 <div id="auth-status" style="display: inline; padding-left: 25px"></div>
   
 <hr>
-<form name="search" onsubmit="search">
+<form name="search" onsubmit="search()">
   <select name="calendarId"><option>Select Calendar...</option></select>  
   <table>
     <tr><td>iCalUID</td><td><input name="iCalUID" type="text"/></td></tr>
