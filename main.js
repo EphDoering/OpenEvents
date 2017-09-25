@@ -1,3 +1,4 @@
+(  function(){
   var GoogleAuth;
   var SCOPE = 'https://www.googleapis.com/auth/calendar';
   function handleClientLoad() {
@@ -10,7 +11,17 @@
     // Retrieve the discovery document for version 3 of Google Drive API.
     // In practice, your app can retrieve one or more discovery documents.
     var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+    
+    $.ajax({
+      dataType: "json",
+      url: discoveryUrl,
+      success: (responce)=>{
+		  discoveryAPI=responce;
+		  initializeForms();
+		  }
+    });
 
+    
     // Initialize the gapi.client object, which app uses to make API requests.
     // Get API key and client ID from API Console.
     // 'scope' field specifies space-delimited list of access scopes.
@@ -93,11 +104,117 @@
 document.forms.search.addEventListener('submit',function(e){
   e.preventDefault();
   var obj={}
-  $(document.forms.search).serializeArray().foreach(function(item){
+  var types={};
+  $(document.forms.search).serializeArray().forEach(function(item){
     if(item.value){
-      obj[item.name]=item.value;
+      switch(discoveryAPI.resources.events.methods.list.parameters[item.name].format){
+        case "date-time":
+          obj[item.name]=(new Date(item.value)).toISOString();
+          break;
+        default:
+          types[discoveryAPI.resources.events.methods.list.parameters[item.name].format]=true;
+          obj[item.name]=item.value;
+      }
     }
   })
   console.log(obj);
+  console.log(types);
+  gapi.client.calendar.events.list(obj).then(console.log,console.error);
   return false;
 })
+
+
+var initializeForms=function(){
+	var addStuff=createFormTable(discoveryAPI.resources.events.methods.list.parameters,listEventParams));
+	addStuff.firstChild.removeChild(addStuff.firstChild.firstChild);
+	document.forms.search.replaceChild(addStuff,document.forms.search.calendarId.nextSibling);
+}
+
+var listEventParams={
+  calendarId:"To Be Removed",
+  orderBy:"Order By",
+  q:"Search Text",
+  showDeleted:"Include Deleted",
+  showHiddenInvitations:"Include Hidden Invitations",
+  timeMax:"Starts Before",
+  timeMin:"Ends After",
+  updatedMin:"Modified Since"
+}
+
+var autoPrefix=0;
+var createFormTable=function(parameters,labels,prefix){
+  prefix=prefix|| "p"+(autoPrefix++);
+  var mainDiv=document.createElement('div');
+  var table=document.createElement('table');
+  for(var name in labels){
+    if(parameters[name]){
+      table.appendChild(createRow(parameters[name],labels[name],prefix));
+    }
+  }
+  mainDiv.appendChild(table);
+  mainDiv.appendChild(document.createElement('label'));
+  mainDiv.lastChild.innerText="Show All";
+  mainDiv.lastChild.HTMLfor=prefix+"ShowAllCheckbox";
+  mainDiv.appendChild(document.createElement('input'));
+  mainDiv.lastChild.type='checkbox';
+  mainDiv.lastChild.className='show-hide-next';
+  table=document.createElement('table');
+  for(var name in parameters){
+    if(!labels[name]){
+      table.appendChild(createRow(parameters[name],name,prefix));
+    }
+  }
+  mainDiv.appendChild(table);
+  return mainDiv;
+}
+
+var createRow=function(parameter,label,prefix){
+  var row=document.createElement('tr');
+  var cell=document.createElement('td');
+  cell.appendChild(document.createElement('input'));
+  switch(parameter.type){
+    case "boolean":
+      cell.firstChild.type='checkbox';
+      break;
+    case "integer":
+      cell.firstChild.type='number';
+      if(parameter.min){
+        cell.firstChild.min=parameter.min;
+      }
+      if(parameter.max){
+        cell.firstChild.max=parameter.max;
+      }
+      break;
+    case "string":
+      if(parameter.enum){
+        cell.replaceChild(document.createElement('select'),cell.firstChild);
+        cell.firstChild.appendChild(document.createElement('option'));
+        for(var i in parameter.enum){
+          cell.firstChild.appendChild(document.createElement('option'));
+          cell.firstChild.lastChild.innerText=parameter.enum[i];
+        }
+      }else if(parameter.format){
+        switch(parameter.format){
+          case "date-time":
+            cell.firstChild.type="datetime-local";
+        }
+      }
+      break;
+    default:
+      console.warn("Unknown Parameter type:"+parameter.type+' for '+name);
+  }
+  cell.firstChild.id=prefix+name;
+  cell.firstChild.name=name;
+  cell.title=parameter.description;
+  row.appendChild(cell);
+  cell=document.createElement('td');
+  cell.appendChild(document.createElement('label'));
+  cell.firstChild.innerText=label;
+  cell.firstChild.htmlFor=prefix+name;
+  row.insertBefore(cell,row.firstChild);
+  return row;
+}
+
+
+
+})();
