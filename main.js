@@ -125,7 +125,7 @@ document.forms.search.addEventListener('submit',function(e){
 
 
 var initializeForms=function(){
-	var addStuff=createFormTable(discoveryAPI.resources.events.methods.list.parameters,listEventParams));
+	var addStuff=createFormTable(discoveryAPI.resources.events.methods.list.parameters,listEventParams);
 	addStuff.firstChild.removeChild(addStuff.firstChild.firstChild);
 	document.forms.search.replaceChild(addStuff,document.forms.search.calendarId.nextSibling);
 }
