@@ -205,7 +205,7 @@ var initializeForms=function(){
 
 var listEventParams={
   calendarId:"",
-  orderBy:"Order By",
+  orderBy:"",
   q:"Search Text",
   showDeleted:"Include Deleted",
   showHiddenInvitations:"Include Hidden Invitations",

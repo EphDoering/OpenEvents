@@ -8,8 +8,12 @@
 </style>
 </head>
 <body>
-  
-
+<h1>Open Events</h1>
+<h3>A Google Calendar Bulk Editor</h3>
+<p>This tool lets you search for events you would like to edit, and then edit specfic feilds to assign to all of the found events. For example, one could search for "dentist" and set the color of all of those events to red.</p>
+<hr>
+<p>No data is directly being stored locally or remotely by this tool. However, the google API is storing authentication cookies locally, saving the authorization. Additioanally, the google api is used to search and modify your calendars.</p>
+<hr>
 <button id="sign-in-or-out-button"
         style="margin-left: 25px">Sign In/Authorize</button>
 <button id="revoke-access-button"
@@ -18,17 +22,19 @@
 <div id="auth-status" style="display: inline; padding-left: 25px"></div>
   
 <hr>
+<h3>Step 1. Search</h3>
 <form name="search">
   <select name="calendarId"><option>Select Calendar...</option></select>
   <div>Form PlaceHolder</div>
   <input type="submit" value="search"/>
 </form>
 <br/>
-<form name="filter">
+<form name="filter" style="display:none;">
   <div>Form PlaceHolder</div>
   <label>Auto <input type="checkbox" checked /></label><input type="submit" value="Filter" disabled />
 </form>
 <br/>
+<h3>Step 2: Edit</h3>
 Edit all <span id=found_count></span> found events:
 <form name="patch">
   <div>Form PlaceHolder</div>
@@ -40,5 +46,7 @@ Edit all <span id=found_count></span> found events:
         onload="this.onload=function(){};handleClientLoad()" 
         onreadystatechange="if (this.readyState === 'complete') this.onload()">
 </script>
+<br/>
+
 </body>
 </html>
