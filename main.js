@@ -248,7 +248,7 @@ var createFormTable=function(parameters,labels,prefix){
   }
   mainDiv.appendChild(table);
   mainDiv.appendChild(document.createElement('label'));
-  mainDiv.lastChild.innerText="Show Advanaced Parameters";
+  mainDiv.lastChild.innerText="Show Advanced Parameters";
   mainDiv.lastChild.htmlFor=prefix+"ShowAllCheckbox";
   mainDiv.appendChild(document.createElement('input'));
   mainDiv.lastChild.type='checkbox';
