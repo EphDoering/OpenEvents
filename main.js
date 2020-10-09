@@ -92,6 +92,7 @@ var colorSelect=null
           var newSel=colorSelect.cloneNode(true)
           newSel.name=input.name
           newSel.addEventListener('change',updateColorOfSelectOnChange)
+          newSel.selectedIndex=-1;
           input.replaceWith(newSel)
         }
     })
@@ -314,6 +315,9 @@ var createRow=function(name, parameter,label,prefix){
 function updateColorOfSelectOnChange(e){
   let sel=e.target
   sel.style.color=sel.selectedOptions[0].style.color
+  if(sel.selectedIndex==0){
+    sel.selectedIndex=-1;
+  }
 }
 
 
